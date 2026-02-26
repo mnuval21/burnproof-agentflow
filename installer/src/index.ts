@@ -9,7 +9,7 @@ import {
   cancel,
   isCancel,
 } from '@clack/prompts';
-import { existsSync, mkdirSync, copyFileSync, readdirSync, statSync } from 'fs';
+import { existsSync, mkdirSync, copyFileSync, readdirSync, statSync, readFileSync, appendFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import pc from 'picocolors';
@@ -112,6 +112,40 @@ async function main() {
       copyFileSync(workflowSrc, join(targetDir, 'WORKFLOW.md'));
     }
     s.message('Copying WORKFLOW.md...');
+
+    // Update .gitignore
+    s.message('Updating .gitignore...');
+    const gitignorePath = join(targetDir, '.gitignore');
+    const agentflowBlock = `
+# BurnProof-AgentFlow — context files (live on agentflow branch, not main)
+/agents/
+/templates/
+/intake/
+/WORKFLOW.md
+/specs/
+/config/
+/docs/prd.md
+/docs/pmf.md
+/docs/architecture.md
+/docs/design-system.md
+/docs/current-state.md
+/docs/migration-guide.md
+/docs/wireframes/
+/docs/intake/
+/docs/environments.md
+/docs/secrets.md
+/docs/devops.md
+`;
+
+    if (existsSync(gitignorePath)) {
+      const existing = readFileSync(gitignorePath, 'utf8');
+      if (!existing.includes('BurnProof-AgentFlow')) {
+        appendFileSync(gitignorePath, agentflowBlock);
+      }
+    } else {
+      writeFileSync(gitignorePath, agentflowBlock.trimStart());
+    }
+    s.message('✓ .gitignore updated');
 
     // Create required project directories (empty, for generated files)
     for (const dir of [

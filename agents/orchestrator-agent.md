@@ -204,9 +204,7 @@ Once the team is confirmed, run the workflow in order. You are the conductor —
   git show-ref --verify --quiet refs/heads/agentflow \
     || git checkout -b agentflow && git checkout -
   ```
-  Confirm `.gitignore` has the framework file entries from `scripts/agentflow.gitignore`.
-  If not, tell the human:
-  > "One quick setup step — add the lines from `scripts/agentflow.gitignore` to your `.gitignore` so spec files stay off main. Takes 30 seconds."
+  Confirm `.gitignore` has the framework file entries (installer handles this automatically — if missing, the human skipped the installer and should re-run it).
 
 → Summon PRD Agent
   → Conduct interview (PRD Agent talks through you)

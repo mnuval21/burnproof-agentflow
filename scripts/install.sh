@@ -98,6 +98,41 @@ echo "  ✓ intake/"
 cp    "$SRC/WORKFLOW.md" "$TARGET/WORKFLOW.md"
 echo "  ✓ WORKFLOW.md"
 
+# ── Update .gitignore ─────────────────────────────────────────────────────────
+GITIGNORE="$TARGET/.gitignore"
+AGENTFLOW_BLOCK="
+# BurnProof-AgentFlow — context files (live on agentflow branch, not main)
+/agents/
+/templates/
+/intake/
+/WORKFLOW.md
+/specs/
+/config/
+/docs/prd.md
+/docs/pmf.md
+/docs/architecture.md
+/docs/design-system.md
+/docs/current-state.md
+/docs/migration-guide.md
+/docs/wireframes/
+/docs/intake/
+/docs/environments.md
+/docs/secrets.md
+/docs/devops.md
+"
+
+if [ -f "$GITIGNORE" ]; then
+  if ! grep -q "BurnProof-AgentFlow" "$GITIGNORE"; then
+    echo "$AGENTFLOW_BLOCK" >> "$GITIGNORE"
+    echo "  ✓ .gitignore updated"
+  else
+    echo "  ✓ .gitignore already has agentflow entries"
+  fi
+else
+  echo "$AGENTFLOW_BLOCK" > "$GITIGNORE"
+  echo "  ✓ .gitignore created"
+fi
+
 # ── Create empty project directories ─────────────────────────────────────────
 mkdir -p \
   "$TARGET/specs/epics" \
