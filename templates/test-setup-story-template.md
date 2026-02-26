@@ -57,7 +57,7 @@ This project currently has no test framework configured. Before any feature work
 
 ## Stack-Specific Setup Notes
 
-### Remix + React + TypeScript (BurnProof stack)
+### Remix + React + TypeScript
 ```bash
 # Vitest + React Testing Library
 npm install -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/user-event @testing-library/jest-dom
