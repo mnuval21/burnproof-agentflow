@@ -30,7 +30,11 @@ echo ""
 # ── Guard: already installed? ─────────────────────────────────────────────────
 if [ -d "$TARGET/agents" ]; then
   echo -e "${YELLOW}Warning: agents/ already exists here.${NC}"
-  read -r -p "Overwrite existing installation? [y/N] " CONFIRM
+  if [ -t 0 ]; then
+    read -r -p "Overwrite existing installation? [y/N] " CONFIRM
+  else
+    read -r -p "Overwrite existing installation? [y/N] " CONFIRM < /dev/tty
+  fi
   if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
     echo "Installation cancelled."
     exit 0
@@ -45,7 +49,13 @@ echo "  2) Cursor        — adds @rex and @new-story rules"
 echo "  3) Both"
 echo "  4) Skip          — I'll set up adapters manually"
 echo ""
-read -r -p "Choice [1-4]: " EDITOR_CHOICE
+
+# Force read from terminal even if stdin is piped
+if [ -t 0 ]; then
+  read -r -p "Choice [1-4]: " EDITOR_CHOICE
+else
+  read -r -p "Choice [1-4]: " EDITOR_CHOICE < /dev/tty
+fi
 echo ""
 
 case "$EDITOR_CHOICE" in
