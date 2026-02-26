@@ -6,7 +6,7 @@
 
 set -e
 
-REPO="YOUR-ORG/burnproof-agentflow"
+REPO="mnuval21/burnproof-agentflow"
 BRANCH="main"
 TARBALL_URL="https://github.com/$REPO/archive/refs/heads/$BRANCH.tar.gz"
 
