@@ -1,0 +1,13 @@
+---
+description: Scaffold a new BurnProof-AgentFlow story file from the standard template. Use when adding a story mid-sprint or creating a story quickly.
+globs:
+alwaysApply: false
+---
+
+# New Story — BurnProof-AgentFlow
+
+Create a new story file using `templates/story-template.md`.
+
+Ask the human for: Epic ID, story title, domain (FE/BE/FS), user story statement, and acceptance criteria. Then create the file at `specs/stories/STORY-[EPIC-ID]-[N]-[kebab-title].md` with all fields pre-filled.
+
+Remind the human to add test levels to each AC before assigning to a dev agent.

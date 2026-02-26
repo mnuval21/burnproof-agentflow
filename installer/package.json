@@ -1,0 +1,39 @@
+{
+  "name": "create-burnproof-agentflow",
+  "version": "0.1.0",
+  "description": "Install BurnProof-AgentFlow into any project — AI agent framework for spec-driven development",
+  "type": "module",
+  "bin": {
+    "create-burnproof-agentflow": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --target node18",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist",
+    "template"
+  ],
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "fs-extra": "^11.2.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.0.0",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "agentflow",
+    "ai-agents",
+    "spec-driven",
+    "burnproof"
+  ]
+}

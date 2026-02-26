@@ -1,0 +1,39 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# BurnProof-AgentFlow — context files
+#
+# Add these lines to your project's .gitignore.
+# These files live on the `agentflow` branch, not main.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Agent framework
+/agents/
+/templates/
+/intake/
+/WORKFLOW.md
+
+# Living spec documents
+/specs/
+
+# Internal planning docs (never user-facing)
+/docs/prd.md
+/docs/pmf.md
+/docs/architecture.md
+/docs/design-system.md
+/docs/current-state.md
+/docs/migration-guide.md
+/docs/wireframes/
+/docs/intake/
+/docs/environments.md
+/docs/secrets.md
+/docs/devops.md
+
+# Orchestrator runtime config
+/config/
+
+# ──────────────────────────────────────────────────────────────────────────────
+# These docs DO belong in main (generated for users/devs):
+# /README.md
+# /docs/api/
+# /docs/user-guide.md
+# /docs/onboarding.md
+# ──────────────────────────────────────────────────────────────────────────────
