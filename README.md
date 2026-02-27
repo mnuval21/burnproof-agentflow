@@ -35,6 +35,11 @@ npx create-burnproof-agentflow
 node installer/dist/index.js
 ```
 
+**Uninstall:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/mnuval21/burnproof-agentflow/main/scripts/uninstall.sh | bash
+```
+
 ---
 
 ## Start a project
