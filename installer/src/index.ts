@@ -12,6 +12,7 @@ import {
 import { existsSync, mkdirSync, copyFileSync, readdirSync, statSync, readFileSync, appendFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { execFileSync } from 'child_process';
 import pc from 'picocolors';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -49,7 +50,7 @@ async function main() {
   note(pc.cyan(targetDir), 'Installing into');
 
   // Warn if already installed
-  if (existsSync(join(targetDir, 'agents'))) {
+  if (existsSync(join(targetDir, '.agentflow'))) {
     const overwrite = await confirm({
       message: 'BurnProof-AgentFlow files already exist here. Overwrite?',
       initialValue: false,
@@ -96,65 +97,52 @@ async function main() {
   s.start('Installing...');
 
   try {
-    // Core framework directories
-    copyDir(join(frameworkRoot, 'agents'), join(targetDir, 'agents'));
+    // Core framework directories (all under .agentflow/)
+    copyDir(join(frameworkRoot, 'agents'), join(targetDir, '.agentflow/agents'));
     s.message('Copying agent files...');
 
-    copyDir(join(frameworkRoot, 'templates'), join(targetDir, 'templates'));
+    copyDir(join(frameworkRoot, 'templates'), join(targetDir, '.agentflow/templates'));
     s.message('Copying templates...');
 
-    copyDir(join(frameworkRoot, 'intake'), join(targetDir, 'intake'));
+    copyDir(join(frameworkRoot, 'intake'), join(targetDir, '.agentflow/intake'));
     s.message('Copying intake folder...');
 
     // WORKFLOW.md
     const workflowSrc = join(frameworkRoot, 'WORKFLOW.md');
     if (existsSync(workflowSrc)) {
-      copyFileSync(workflowSrc, join(targetDir, 'WORKFLOW.md'));
+      copyFileSync(workflowSrc, join(targetDir, '.agentflow/WORKFLOW.md'));
     }
     s.message('Copying WORKFLOW.md...');
 
-    // Update .gitignore
-    s.message('Updating .gitignore...');
-    const gitignorePath = join(targetDir, '.gitignore');
-    const agentflowBlock = `
-# BurnProof-AgentFlow — context files (live on agentflow branch, not main)
-/agents/
-/templates/
-/intake/
-/WORKFLOW.md
-/specs/
-/config/
-/docs/prd.md
-/docs/pmf.md
-/docs/architecture.md
-/docs/design-system.md
-/docs/current-state.md
-/docs/migration-guide.md
-/docs/wireframes/
-/docs/intake/
-/docs/environments.md
-/docs/secrets.md
-/docs/devops.md
-`;
-
-    if (existsSync(gitignorePath)) {
-      const existing = readFileSync(gitignorePath, 'utf8');
-      if (!existing.includes('BurnProof-AgentFlow')) {
-        appendFileSync(gitignorePath, agentflowBlock);
+    // Set up .gitattributes (Option A — auto-strip .agentflow/ on merge to main)
+    s.message('Configuring .gitattributes...');
+    const gitattributesPath = join(targetDir, '.gitattributes');
+    const agentflowAttr = '.agentflow/ merge=ours\n';
+    if (existsSync(gitattributesPath)) {
+      const existing = readFileSync(gitattributesPath, 'utf8');
+      if (!existing.includes('.agentflow/')) {
+        appendFileSync(gitattributesPath, '\n# BurnProof-AgentFlow — strip on merge to main\n' + agentflowAttr);
       }
     } else {
-      writeFileSync(gitignorePath, agentflowBlock.trimStart());
+      writeFileSync(gitattributesPath, '# BurnProof-AgentFlow — strip on merge to main\n' + agentflowAttr);
     }
-    s.message('✓ .gitignore updated');
+
+    // Configure git merge driver (required for .gitattributes merge=ours to work)
+    try {
+      execFileSync('git', ['rev-parse', '--git-dir'], { cwd: targetDir, stdio: 'ignore' });
+      execFileSync('git', ['config', 'merge.ours.driver', 'true'], { cwd: targetDir, stdio: 'ignore' });
+      s.message('Git merge driver configured...');
+    } catch {
+      // Not a git repo — skip git config (user can run it manually)
+    }
 
     // Create required project directories (empty, for generated files)
     for (const dir of [
-      'specs/epics',
-      'specs/stories',
-      'specs/contracts',
-      'docs/intake',
-      'docs/api',
-      'config',
+      '.agentflow/specs/epics',
+      '.agentflow/specs/stories',
+      '.agentflow/specs/contracts',
+      '.agentflow/docs/intake',
+      '.agentflow/config',
     ]) {
       mkdirSync(join(targetDir, dir), { recursive: true });
     }
@@ -195,10 +183,10 @@ async function main() {
     steps.push('Use @rex in Cursor to start Rex');
   }
   if (editor === 'none') {
-    steps.push('Open agents/orchestrator-agent.md and load it as your agent');
+    steps.push('Open .agentflow/agents/orchestrator-agent.md and load it as your agent');
   }
-  steps.push('Drop any reference files in intake/ before your first session');
-  steps.push('See WORKFLOW.md for the full guide');
+  steps.push('Drop any reference files in .agentflow/intake/ before your first session');
+  steps.push('See .agentflow/WORKFLOW.md for the full guide');
 
   note(steps.map((step, i) => `${i + 1}. ${step}`).join('\n'), 'Next steps');
 

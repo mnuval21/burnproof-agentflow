@@ -32,7 +32,7 @@ To start a project, simply invoke the Orchestrator Agent and say:
 
 The Orchestrator takes it from there.
 
-**Got reference files?** Drop screenshots, brand assets, existing docs, or API guides into the `intake/` folder before starting. Rex will scan it automatically at kickoff and route everything to the right agents.
+**Got reference files?** Drop screenshots, brand assets, existing docs, or API guides into the `.agentflow/intake/` folder before starting. Rex will scan it automatically at kickoff and route everything to the right agents.
 
 ---
 
@@ -55,29 +55,29 @@ The Orchestrator takes it from there.
          ┌───────────▼───────────┐
          │  [BROWNFIELD ONLY]    │
          │  Codebase Audit Agent │  Sonnet
-         │  → docs/current-      │
-         │    state.md           │
+         │  → .agentflow/docs/   │
+         │    current-state.md   │
          └───────────┬───────────┘
                      │
 ┌────────────────────▼────────────────────────────────────┐
 │  PHASE 1 — DISCOVERY                                    │
 │  PRD Agent interviews human                  Opus       │
 │  (brownfield: reads audit first)                        │
-│  → docs/prd.md              ◄── Human approves          │
+│  → .agentflow/docs/prd.md   ◄── Human approves          │
 └────────────────────┬────────────────────────────────────┘
                      │
 ┌────────────────────▼────────────────────────────────────┐
 │  PHASE 2 — ARCHITECTURE                                 │
 │  Architect Agent                             Opus       │
-│  → docs/architecture.md                                 │
-│  → specs/contracts/*.md     ◄── Human approves          │
+│  → .agentflow/docs/architecture.md                      │
+│  → .agentflow/specs/contracts/*.md ◄── Human approves   │
 └────────────────────┬────────────────────────────────────┘
                      │
 ┌────────────────────▼────────────────────────────────────┐
 │  PHASE 3 — PLANNING                                     │
 │  PM Agent creates Epics + Stories            Opus       │
-│  → specs/epics/*.md                                     │
-│  → specs/stories/*.md                                   │
+│  → .agentflow/specs/epics/*.md                          │
+│  → .agentflow/specs/stories/*.md                        │
 │                                                         │
 │  PO Agent validates backlog               Sonnet        │
 │  ✓ No circular dependencies                             │
@@ -164,7 +164,7 @@ The PRD Agent will ask you this first. Your answer determines the path.
 Jump straight to Phase 1. The PRD Agent will interview you about what you want to build.
 
 #### Brownfield (Existing Project)
-The **Codebase Audit Agent** runs first. It reads your existing code and produces `docs/current-state.md` — a plain-English map of what already exists. Then the PRD Agent uses that context to interview you about what you want to *add or change*.
+The **Codebase Audit Agent** runs first. It reads your existing code and produces `.agentflow/docs/current-state.md` — a plain-English map of what already exists. Then the PRD Agent uses that context to interview you about what you want to *add or change*.
 
 > This order matters. Understanding what exists before planning what's next prevents re-speccing things that are already built and ensures new work fits with existing patterns.
 
@@ -172,7 +172,7 @@ The **Codebase Audit Agent** runs first. It reads your existing code and produce
 
 ## Phase 1 — Discovery (PRD Agent)
 
-**Model:** Opus | **Output:** `docs/prd.md`
+**Model:** Opus | **Output:** `.agentflow/docs/prd.md`
 
 The PRD Agent interviews you one question at a time. Don't rush this. The questions cover:
 - What problem are you solving, and for whom?
@@ -192,7 +192,7 @@ For brownfield projects, the questions focus on *what's changing* rather than re
 
 ## Phase 2 — Architecture (Architect Agent)
 
-**Model:** Opus | **Output:** `docs/architecture.md` + `specs/contracts/*.md`
+**Model:** Opus | **Output:** `.agentflow/docs/architecture.md` + `.agentflow/specs/contracts/*.md`
 
 The Architect Agent reads your approved PRD and:
 1. Confirms or proposes a tech stack
@@ -207,7 +207,7 @@ API contracts are the most critical output of this phase. They allow frontend an
 
 ## Phase 3 — Planning (PM Agent + PO Agent)
 
-**Models:** PM = Opus, PO = Sonnet | **Output:** `specs/epics/*.md`, `specs/stories/*.md`
+**Models:** PM = Opus, PO = Sonnet | **Output:** `.agentflow/specs/epics/*.md`, `.agentflow/specs/stories/*.md`
 
 ### PM Agent
 Reads the PRD and architecture to create:
@@ -376,7 +376,7 @@ Every completed story results in:
 Branch:  feature/STORY-[ID]-[story-title]
 Commit:  plain-English description of what changed (STORY-[ID])
          Casual style — no feat: prefix, no conventional commits format.
-PR:      Opens using templates/pr-template.md
+PR:      Opens using .agentflow/templates/pr-template.md
          → Story reference
          → What was built (plain English)
          → Screenshots for UI changes
@@ -414,61 +414,79 @@ The PR link is recorded in the story file. Reviewers can trace every PR back to 
 ## File Structure Reference
 
 ```
-burnproof-agentflow/
-├── WORKFLOW.md                   ← You are here
+your-project/
+├── .agentflow/                   ← All agent context lives here
+│   ├── WORKFLOW.md               ← You are here
+│   │
+│   ├── agents/                   ← Agent persona files
+│   │   ├── orchestrator-agent.md     Opus  ← START HERE
+│   │   ├── prd-agent.md              Opus
+│   │   ├── codebase-audit-agent.md   Sonnet
+│   │   ├── architect-agent.md        Opus
+│   │   ├── uiux-designer-agent.md    Opus
+│   │   ├── pm-agent.md               Opus
+│   │   ├── po-agent.md               Sonnet
+│   │   ├── frontend-dev-agent.md     Sonnet
+│   │   ├── backend-dev-agent.md      Sonnet
+│   │   ├── fullstack-dev-agent.md    Sonnet
+│   │   ├── qa-agent.md               Sonnet
+│   │   ├── devops-agent.md           Sonnet
+│   │   └── documentation-agent.md   Sonnet
+│   │
+│   ├── templates/                ← Document templates
+│   │   ├── prd-template.md
+│   │   ├── architecture-template.md
+│   │   ├── epic-template.md
+│   │   ├── story-template.md
+│   │   ├── test-setup-story-template.md
+│   │   ├── api-contract-template.md
+│   │   └── pr-template.md
+│   │
+│   ├── intake/                   ← Drop reference files here before starting
+│   │   └── README.md
+│   │
+│   ├── docs/                     ← Generated per project (agent context)
+│   │   ├── intake/               (files routed here after processing)
+│   │   ├── current-state.md      (brownfield only)
+│   │   ├── prd.md
+│   │   ├── pmf.md
+│   │   ├── architecture.md
+│   │   ├── design-system.md
+│   │   ├── wireframes/
+│   │   ├── environments.md
+│   │   ├── secrets.md
+│   │   └── devops.md
+│   │
+│   ├── specs/                    ← Living spec documents
+│   │   ├── epics/
+│   │   │   └── EPIC-[N]-[name].md
+│   │   ├── stories/
+│   │   │   └── STORY-[EPIC-N]-[N]-[name].md
+│   │   └── contracts/
+│   │       └── [domain]-contract.md
+│   │
+│   └── config/                   ← Runtime config (written by Orchestrator)
+│       ├── project-state.md
+│       ├── parallelization.md
+│       ├── board.md
+│       └── board.html
 │
-├── agents/                       ← Agent persona files
-│   ├── orchestrator-agent.md     Opus  ← START HERE
-│   ├── prd-agent.md              Opus
-│   ├── codebase-audit-agent.md   Sonnet
-│   ├── architect-agent.md        Opus
-│   ├── uiux-designer-agent.md    Opus
-│   ├── pm-agent.md               Opus
-│   ├── po-agent.md               Sonnet
-│   ├── frontend-dev-agent.md     Sonnet
-│   ├── backend-dev-agent.md      Sonnet
-│   ├── fullstack-dev-agent.md    Sonnet
-│   ├── qa-agent.md               Sonnet
-│   ├── devops-agent.md           Sonnet
-│   └── documentation-agent.md   Sonnet
+├── .claude/commands/             ← Claude Code commands (set up by installer)
+│   ├── rex.md
+│   └── new-story.md
 │
-├── templates/                    ← Document templates
-│   ├── prd-template.md
-│   ├── architecture-template.md
-│   ├── epic-template.md
-│   ├── story-template.md
-│   ├── test-setup-story-template.md
-│   ├── api-contract-template.md
-│   └── pr-template.md
+├── .cursor/rules/                ← Cursor rules (set up by installer)
 │
-├── intake/                       ← Drop reference files here before starting
-│   └── README.md
+├── .gitattributes                ← Strips .agentflow/ on merge to main (auto-created)
 │
-├── docs/                         ← Generated per project
-│   ├── intake/                   (files routed here after processing)
-│   ├── current-state.md          (brownfield only)
-│   ├── prd.md
-│   ├── pmf.md
-│   ├── architecture.md
-│   ├── design-system.md
-│   └── api/
+├── docs/                         ← User-facing docs (generated by Documentation Agent)
+│   ├── api/
+│   ├── user-guide.md
+│   └── onboarding.md
 │
-├── specs/                        ← Living spec documents
-│   ├── epics/
-│   │   └── EPIC-[N]-[name].md
-│   ├── stories/
-│   │   └── STORY-[EPIC-N]-[N]-[name].md
-│   └── contracts/
-│       └── [domain]-contract.md
+├── README.md                     ← Project README (generated by Documentation Agent)
 │
-├── config/                       ← Runtime config (written by Orchestrator)
-│   └── parallelization.md
-│
-└── adapters/                     ← Editor-specific config (set up by installer)
-    ├── cursor/
-    ├── claude-code/
-    ├── copilot/
-    └── windsurf/
+└── [your app code]
 ```
 
 ---
@@ -478,13 +496,13 @@ burnproof-agentflow/
 | Agent | Summoned by | Produces | Human Approval |
 |---|---|---|---|
 | **Orchestrator** | You (always) | Team assembly, workflow management | N/A — it IS the interface |
-| Codebase Audit | Orchestrator (brownfield) | `docs/current-state.md` | No |
-| PRD | Orchestrator | `docs/prd.md` | **Yes** |
-| Architect | Orchestrator | `docs/architecture.md`, contracts | **Yes** |
-| UI/UX Designer | Orchestrator (parallel w/ Architect) | `docs/design-system.md`, wireframes | **Yes** |
+| Codebase Audit | Orchestrator (brownfield) | `.agentflow/docs/current-state.md` | No |
+| PRD | Orchestrator | `.agentflow/docs/prd.md` | **Yes** |
+| Architect | Orchestrator | `.agentflow/docs/architecture.md`, contracts | **Yes** |
+| UI/UX Designer | Orchestrator (parallel w/ Architect) | `.agentflow/docs/design-system.md`, wireframes | **Yes** |
 | PM | Orchestrator | Epics, Stories | **Yes** |
 | PO (pre-dev) | Orchestrator | Validated backlog | **Yes** |
-| DevOps | Orchestrator (parallel w/ Epic 1) | CI/CD, env docs | No |
+| DevOps | Orchestrator (parallel w/ Epic 1) | CI/CD, `.agentflow/docs/` env docs | No |
 | Dev Agents | Orchestrator | Code, PR, updated story | Drift proposals only |
 | PO (sweep) | Orchestrator (auto) | Alignment sweep in story file | No |
 | QA | Orchestrator | QA report in Epic file | **Yes (sign-off)** |
@@ -501,7 +519,7 @@ Any proposed change must go through the drift proposal process. The dev agent lo
 Not recommended. The sweep is lightweight and runs automatically. Skipping it removes the early-warning system that makes brownfield and parallel development safe. A missed alignment issue that reaches QA costs significantly more to fix.
 
 **Q: What if I want to add a story mid-Epic?**
-Add the story using `templates/story-template.md`, assign it to an Epic, and run the PO Agent's pre-dev validation on the new story only. Make sure to check its dependencies against existing stories.
+Add the story using `.agentflow/templates/story-template.md`, assign it to an Epic, and run the PO Agent's pre-dev validation on the new story only. Make sure to check its dependencies against existing stories.
 
 **Q: Do the dev agents merge PRs?**
 No. Dev agents open PRs and link them in the story file. Merging is a human decision.
@@ -509,5 +527,5 @@ No. Dev agents open PRs and link them in the story file. Merging is a human deci
 **Q: What's the difference between a MAJOR and a BLOCKER in the QA report?**
 A BLOCKER means the feature doesn't work correctly or safely as specified — it cannot ship. A MAJOR means there's a meaningful issue that should be fixed but might be acceptable to defer with a documented plan.
 
-**Q: What goes in the intake/ folder?**
+**Q: What goes in the .agentflow/intake/ folder?**
 Drop anything you want Rex to know about before you start — screenshots of competitor apps, brand guidelines, existing feature specs, API docs from third-party integrations, rough sketches. Rex scans this folder at kickoff and routes each file to the right agent. You can also share files directly in the chat and Rex will save them automatically.

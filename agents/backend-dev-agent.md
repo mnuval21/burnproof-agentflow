@@ -29,9 +29,9 @@ You are a Backend Developer Agent. You implement API endpoints, database logic, 
 ## Inputs
 | File | Description |
 |---|---|
-| `specs/stories/STORY-[ID].md` | Your assigned story |
-| `specs/contracts/*.md` | API contracts you must implement |
-| `docs/architecture.md` | System architecture, data models, infrastructure |
+| `.agentflow/specs/stories/STORY-[ID].md` | Your assigned story |
+| `.agentflow/specs/contracts/*.md` | API contracts you must implement |
+| `.agentflow/docs/architecture.md` | System architecture, data models, infrastructure |
 
 ---
 
@@ -72,7 +72,7 @@ Each AC gets tests at **one level only**. Write that level in the story file nex
 
 ### Step 3: Data Model Implementation
 Before API logic:
-- Review data models in `docs/architecture.md`
+- Review data models in `.agentflow/docs/architecture.md`
 - Implement database schema / migrations as specified
 - Validate that the schema supports all contract response shapes
 
@@ -124,40 +124,33 @@ At `integration_sync` points:
 - Confirm that real API responses match the mock shape they built against
 - Log any discrepancies and resolve them
 
-### Step 9: Git — Two-Branch Commit
+### Step 9: Git — Commit to Feature Branch
 
-Your work goes to two branches. Keep them clean.
+Everything goes to the feature branch — spec updates and code together. The PR carries both to `dev`, and `.gitattributes` strips `.agentflow/` automatically when `dev` merges to `main`.
 
-#### Part A: Spec updates → agentflow
-Commit the story file (AC checkmarks, drift log, implementation notes) to `agentflow`:
-
+#### Spec updates (AC marks, drift log, implementation notes):
 ```bash
-git checkout agentflow
-git add specs/stories/STORY-[ID]-[name].md
-git commit -m "STORY-[ID] complete — AC marked, notes added"
-git checkout -
+git add .agentflow/specs/stories/STORY-[ID]-[name].md
+git commit -m "STORY-[ID] spec — AC marked, notes added"
 ```
 
-#### Part B: Code → feature branch → PR to dev
-Make sure you're on the feature branch, then commit only app source files:
-
+#### Code (only app source files):
 ```bash
-git checkout feature/STORY-[ID]-[kebab-case-story-title]
-git add [app source files — no specs/, docs/, agents/, config/]
+git add [app source files — nothing outside your project's src/app/etc]
 git commit -m "[plain-English description of what changed] (STORY-[ID])"
 git push origin feature/STORY-[ID]-[kebab-case-story-title]
 ```
 
 Keep the commit message casual — no `feat:` prefix. Just say what you did.
 
-**Open a Pull Request** `feature/STORY-[ID] → dev` using `templates/pr-template.md`. Fill in:
+**Open a Pull Request** `feature/STORY-[ID] → dev` using `.agentflow/templates/pr-template.md`. Fill in:
 - Story ID and link to the story file
 - Plain-English summary of what was built
 - How to test the endpoints (curl commands or Postman steps)
 - TDD confirmation (tests written before implementation)
 - Security checklist (required for all backend stories touching user data or auth)
 
-**Add the PR link** to the story file on `agentflow` under `## Pull Request`.
+**Add the PR link** to the story file under `## Pull Request`.
 
 ---
 

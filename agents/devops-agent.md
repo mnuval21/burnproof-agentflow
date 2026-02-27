@@ -27,15 +27,15 @@ You are the DevOps Agent. You set up the deployment pipeline, environment config
 ## Inputs
 | File | Description |
 |---|---|
-| `docs/architecture.md` | Tech stack, infrastructure, deployment targets |
-| `docs/prd.md` | Project name, environment requirements |
+| `.agentflow/docs/architecture.md` | Tech stack, infrastructure, deployment targets |
+| `.agentflow/docs/prd.md` | Project name, environment requirements |
 
 ---
 
 ## Workflow
 
 ### Step 1: Architecture Review
-Read `docs/architecture.md`. Identify:
+Read `.agentflow/docs/architecture.md`. Identify:
 - **Language / framework** → determines build commands and test runner
 - **Deployment target** → Vercel, AWS, Railway, Fly.io, Docker, etc.
 - **Database** → migration strategy for CI/CD
@@ -55,7 +55,7 @@ Define three environments:
 | **Staging** | Pre-production testing | Auto-deploy on merge to `main` |
 | **Production** | Live users | Manual promotion or tag-based release |
 
-Create environment configuration documentation at `docs/environments.md`.
+Create environment configuration documentation at `.agentflow/docs/environments.md`.
 
 ---
 
@@ -106,7 +106,7 @@ Document how secrets are managed:
 - Which are required per environment
 - Who has access
 
-Create `docs/secrets.md` listing all required env vars with descriptions (never values).
+Create `.agentflow/docs/secrets.md` listing all required env vars with descriptions (never values).
 
 ---
 
@@ -114,28 +114,25 @@ Create `docs/secrets.md` listing all required env vars with descriptions (never 
 Document the git branching strategy:
 
 ```
-agentflow      → permanent branch — all specs, docs, contracts, project state
-  (never merges to main)
-
-main           → code only, always deployable, protected
+main           → code only (`.agentflow/` stripped automatically on merge)
   ↑
-dev            → integration branch for code PRs
+dev            → everything: app code + .agentflow/ context files (tracked)
   ↑
-feature/STORY-[ID]-[name]   → dev agents write code here
-  ↓ PR + CI checks pass → dev → main
-  ↓ spec file updates committed separately → agentflow
+feature/STORY-[ID]-[name]   → dev agents write code + spec updates here
+  ↓ PR + CI checks pass → merged to dev
+  ↓ dev → main: .gitattributes strips .agentflow/ automatically
 ```
 
 Rules for `main` branch protection:
 - Require PR review before merge
 - Require CI checks to pass
 - No direct pushes
-- Framework files (agents/, specs/, docs/prd.md, etc.) are gitignored — see `scripts/agentflow.gitignore`
+- `.agentflow/` is stripped from `main` automatically via `.gitattributes`
 
 ---
 
 ### Step 6: Documentation
-Produce `docs/devops.md` with:
+Produce `.agentflow/docs/devops.md` with:
 - How to run the project locally (step by step, plain English)
 - How to run tests
 - How CI/CD works
@@ -151,27 +148,25 @@ Written for non-technical users — assume the reader has never set up a pipelin
 | File | Description |
 |---|---|
 | `.github/workflows/ci.yml` | CI/CD pipeline configuration |
-| `docs/environments.md` | Environment structure and config |
-| `docs/secrets.md` | Required secrets/env vars (no values) |
-| `docs/devops.md` | Plain-English operations guide |
+| `.agentflow/docs/environments.md` | Environment structure and config |
+| `.agentflow/docs/secrets.md` | Required secrets/env vars (no values) |
+| `.agentflow/docs/devops.md` | Plain-English operations guide |
 
 ---
 
-## Git: Split Commit
-DevOps outputs go to two different places:
+## Git: Commit
+All DevOps outputs go to the current branch (feature branch or dev):
 
-**CI/CD and infrastructure files → commit to `dev`/`main` branch (code):**
+**CI/CD configuration:**
 ```bash
 git add .github/workflows/ci.yml
 git commit -m "add CI/CD pipeline"
 ```
 
-**Documentation → commit to `agentflow` branch:**
+**DevOps documentation (committed alongside CI config — stays in .agentflow/ so it's stripped from main):**
 ```bash
-git checkout agentflow
-git add docs/environments.md docs/secrets.md docs/devops.md
+git add .agentflow/.agentflow/docs/environments.md .agentflow/.agentflow/docs/secrets.md .agentflow/.agentflow/docs/devops.md
 git commit -m "add DevOps documentation — environments, secrets, operations guide"
-git checkout -
 ```
 
 ---

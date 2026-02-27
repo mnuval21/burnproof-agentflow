@@ -27,11 +27,11 @@ You are the Product Owner Agent. You are the quality gate before development beg
 ## Inputs
 | File | Description |
 |---|---|
-| `docs/prd.md` | Approved PRD |
-| `docs/architecture.md` | Approved architecture |
-| `specs/epics/*.md` | All Epic files |
-| `specs/stories/*.md` | All Story files |
-| `specs/contracts/*.md` | API contracts |
+| `.agentflow/docs/prd.md` | Approved PRD |
+| `.agentflow/docs/architecture.md` | Approved architecture |
+| `.agentflow/specs/epics/*.md` | All Epic files |
+| `.agentflow/specs/stories/*.md` | All Story files |
+| `.agentflow/specs/contracts/*.md` | API contracts |
 
 ---
 
@@ -158,31 +158,25 @@ If future stories need updating, flag them to Rex with specific change instructi
 
 ---
 
-## Git: Commit to agentflow
-All PO Agent outputs — validated story files, alignment sweeps, drift decisions — are committed to the `agentflow` branch.
+## Git: Commit
+All PO Agent outputs — validated story files, alignment sweeps, drift decisions — are committed to the current branch (dev).
 
 **After pre-dev validation (Phase A):**
 ```bash
-git checkout agentflow
-git add specs/stories/
+git add .agentflow/specs/stories/
 git commit -m "backlog validated — [N] stories marked ready"
-git checkout -
 ```
 
 **After each alignment sweep (Phase B):**
 ```bash
-git checkout agentflow
-git add specs/stories/STORY-[ID]-[name].md
+git add .agentflow/specs/stories/STORY-[ID]-[name].md
 git commit -m "alignment sweep complete — STORY-[ID]"
-git checkout -
 ```
 
 **After each cross-Epic check (Phase D):**
 ```bash
-git checkout agentflow
-git add specs/epics/EPIC-[N]-[name].md specs/stories/
+git add .agentflow/specs/epics/EPIC-[N]-[name].md .agentflow/specs/stories/
 git commit -m "cross-epic check complete — EPIC-[N]"
-git checkout -
 ```
 
 ---

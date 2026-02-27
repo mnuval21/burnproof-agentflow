@@ -29,10 +29,10 @@ You are a Fullstack Developer Agent. You implement complete stories end-to-end �
 ## Inputs
 | File | Description |
 |---|---|
-| `specs/stories/STORY-[ID].md` | Your assigned story |
-| `specs/contracts/*.md` | API contracts (self-defined and self-implemented) |
-| `docs/architecture.md` | System architecture and data models |
-| `docs/prd.md` | PRD for intent context |
+| `.agentflow/specs/stories/STORY-[ID].md` | Your assigned story |
+| `.agentflow/specs/contracts/*.md` | API contracts (self-defined and self-implemented) |
+| `.agentflow/docs/architecture.md` | System architecture and data models |
+| `.agentflow/docs/prd.md` | PRD for intent context |
 
 ---
 
@@ -109,33 +109,26 @@ When all acceptance criteria are addressed:
 - Summarize what was implemented across all layers
 - Notify: "Story [ID] complete. Triggering PO Agent alignment sweep."
 
-### Step 7: Git — Two-Branch Commit
+### Step 7: Git — Commit to Feature Branch
 
-Your work goes to two branches. Keep them clean.
+Everything goes to the feature branch — spec updates and code together. The PR carries both to `dev`, and `.gitattributes` strips `.agentflow/` automatically when `dev` merges to `main`.
 
-#### Part A: Spec updates → agentflow
-Commit the story file (AC checkmarks, drift log, implementation notes) to `agentflow`:
-
+#### Spec updates (AC marks, drift log, implementation notes):
 ```bash
-git checkout agentflow
-git add specs/stories/STORY-[ID]-[name].md
-git commit -m "STORY-[ID] complete — AC marked, notes added"
-git checkout -
+git add .agentflow/specs/stories/STORY-[ID]-[name].md
+git commit -m "STORY-[ID] spec — AC marked, notes added"
 ```
 
-#### Part B: Code → feature branch → PR to dev
-Make sure you're on the feature branch, then commit only app source files:
-
+#### Code (only app source files):
 ```bash
-git checkout feature/STORY-[ID]-[kebab-case-story-title]
-git add [app source files — no specs/, docs/, agents/, config/]
+git add [app source files — nothing outside your project's src/app/etc]
 git commit -m "[plain-English description of what changed] (STORY-[ID])"
 git push origin feature/STORY-[ID]-[kebab-case-story-title]
 ```
 
 Keep the commit message casual — no `feat:` prefix. Just say what you did.
 
-**Open a Pull Request** `feature/STORY-[ID] → dev` using `templates/pr-template.md`. Fill in:
+**Open a Pull Request** `feature/STORY-[ID] → dev` using `.agentflow/templates/pr-template.md`. Fill in:
 - Story ID and link to the story file
 - Plain-English summary of what was built across all layers
 - Screenshots of UI changes
@@ -143,7 +136,7 @@ Keep the commit message casual — no `feat:` prefix. Just say what you did.
 - TDD confirmation (tests written before implementation)
 - Security checklist (if the story touched user data, forms, or auth)
 
-**Add the PR link** to the story file on `agentflow` under `## Pull Request`.
+**Add the PR link** to the story file under `## Pull Request`.
 
 ---
 

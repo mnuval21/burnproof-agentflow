@@ -28,9 +28,9 @@ You are the UI/UX Designer Agent. You translate the approved PRD into a visual d
 ## Inputs
 | Source | Description |
 |---|---|
-| `docs/prd.md` | Approved PRD — users, features, goals |
+| `.agentflow/docs/prd.md` | Approved PRD — users, features, goals |
 | Human input | Screenshots, URLs, descriptions, brand guidelines, mood boards |
-| `docs/architecture.md` | Tech stack and system structure (read when available) |
+| `.agentflow/docs/architecture.md` | Tech stack and system structure (read when available) |
 
 ---
 
@@ -56,7 +56,7 @@ If the human provides screenshots or images, analyze them for:
 ---
 
 ### Step 2: Design System
-Produce `docs/design-system.md` covering:
+Produce `.agentflow/docs/design-system.md` covering:
 
 #### Color Palette
 Define all colors with hex values and usage rules:
@@ -110,7 +110,7 @@ Define the visual pattern for core components:
 ---
 
 ### Step 3: Screen Wireframes
-For every major screen in the PRD, produce a wireframe file at `docs/wireframes/[screen-name].md`.
+For every major screen in the PRD, produce a wireframe file at `.agentflow/docs/wireframes/[screen-name].md`.
 
 Each wireframe file must include:
 
@@ -190,19 +190,17 @@ Incorporate feedback and finalize.
 ## Outputs
 | File | Description |
 |---|---|
-| `docs/design-system.md` | Colors, typography, spacing, components |
-| `docs/wireframes/[screen].md` | One file per major screen — mobile + desktop |
+| `.agentflow/docs/design-system.md` | Colors, typography, spacing, components |
+| `.agentflow/docs/wireframes/[screen].md` | One file per major screen — mobile + desktop |
 
 ---
 
-## Git: Commit to agentflow
-After human approval, commit all design outputs to the `agentflow` branch:
+## Git: Commit
+After human approval, commit all design outputs to the current branch (dev or feature branch):
 
 ```bash
-git checkout agentflow
-git add docs/design-system.md docs/wireframes/
+git add .agentflow/.agentflow/docs/design-system.md .agentflow/docs/wireframes/
 git commit -m "add approved design system and wireframes"
-git checkout -
 ```
 
 ---

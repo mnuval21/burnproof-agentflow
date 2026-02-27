@@ -14,7 +14,7 @@ You talk to one agent: **Rex**. Rex assembles the right team, manages the entire
 You → Rex → [assembles team] → manages workflow → ships code → reports back to You
 ```
 
-Every spec lives as a file. Every decision is documented. Every drift is logged and approved before it's implemented. Code stays clean on `main`. Context lives on the `agentflow` branch.
+Every spec lives as a file. Every decision is documented. Every drift is logged and approved before it's implemented. Code stays clean on `main`. Context lives in `.agentflow/` on `dev`, stripped automatically on merge via `.gitattributes`.
 
 ---
 
@@ -49,13 +49,13 @@ node installer/dist/index.js
 @rex
 ```
 
-That's it. Rex wakes up, checks for existing state, scans your `intake/` folder, and asks: *"What are we building?"*
+That's it. Rex wakes up, checks for existing state, scans your `.agentflow/intake/` folder, and asks: *"What are we building?"*
 
 ---
 
 ## Drop reference files first
 
-Before running `/rex`, drop anything useful into `intake/`:
+Before running `/rex`, drop anything useful into `.agentflow/intake/`:
 
 - Screenshots of competitor apps or inspiration
 - Brand guidelines, logo files
@@ -69,13 +69,18 @@ Rex scans the folder at kickoff and routes each file to the right agent automati
 ## What's included
 
 ```
-agents/          13 specialized agents — each with a focused role
-templates/       Story, Epic, PRD, contract, PR, and project state templates
-adapters/        Editor commands for Claude Code and Cursor
-intake/          Drop reference files here before starting
-scripts/         Install, sync, and publish scripts
-installer/       npx-publishable CLI installer
-WORKFLOW.md      Complete guide to the framework
+.agentflow/         All agent context — installed into your project
+  agents/           13 specialized agents — each with a focused role
+  templates/        Story, Epic, PRD, contract, PR, and project state templates
+  intake/           Drop reference files here before starting
+  docs/             Generated specs, PRDs, architecture, wireframes
+  specs/            Living epics, stories, and API contracts
+  config/           Project state, board, parallelization config
+
+adapters/           Editor commands for Claude Code and Cursor (→ .claude/ or .cursor/)
+scripts/            Install and publish scripts
+installer/          npx-publishable CLI installer
+WORKFLOW.md         Complete guide to the framework
 ```
 
 ---
@@ -103,12 +108,12 @@ WORKFLOW.md      Complete guide to the framework
 ## Git strategy
 
 ```
-agentflow branch  →  all specs, docs, contracts, project state (never merges to main)
-main / dev        →  code only
+dev               →  everything: app code + .agentflow/ context (tracked)
+main              →  code only (.agentflow/ stripped automatically on merge)
 feature/STORY-X   →  dev agents write here → PR to dev
 ```
 
-Framework files are gitignored on `main`/`dev`. Each agent commits its output to the right branch automatically.
+`.gitattributes` handles the strip automatically — no branch switching needed. The installer sets this up. New team members just run the installer and start building.
 
 ---
 
@@ -128,7 +133,7 @@ Framework files are gitignored on `main`/`dev`. Each agent commits its output to
 
 ## Full guide
 
-See [WORKFLOW.md](./WORKFLOW.md) for the complete walkthrough — phases, parallelization modes, agent quick reference, and FAQ.
+See [WORKFLOW.md](./.agentflow/WORKFLOW.md) for the complete walkthrough — phases, parallelization modes, agent quick reference, and FAQ.
 
 ---
 

@@ -27,10 +27,10 @@ You are the QA Agent. You validate completed implementations against their speci
 ## Inputs
 | File | Description |
 |---|---|
-| `specs/stories/*.md` | All completed stories in the Epic |
-| `specs/contracts/*.md` | API contracts |
-| `docs/prd.md` | Original PRD for intent validation |
-| `docs/architecture.md` | Architecture for structural validation |
+| `.agentflow/specs/stories/*.md` | All completed stories in the Epic |
+| `.agentflow/specs/contracts/*.md` | API contracts |
+| `.agentflow/docs/prd.md` | Original PRD for intent validation |
+| `.agentflow/docs/architecture.md` | Architecture for structural validation |
 
 ---
 
@@ -230,14 +230,12 @@ Present the QA report to the human. BLOCKER and MAJOR issues must be resolved be
 
 ---
 
-## Git: Commit to agentflow
-After the QA report is generated, commit the updated Epic file to `agentflow`:
+## Git: Commit
+After the QA report is generated, commit the updated Epic file to the current branch:
 
 ```bash
-git checkout agentflow
-git add specs/epics/EPIC-[N]-[name].md specs/stories/
+git add .agentflow/specs/epics/EPIC-[N]-[name].md .agentflow/specs/stories/
 git commit -m "QA report complete — EPIC-[N] [APPROVED/BLOCKED]"
-git checkout -
 ```
 
 ---

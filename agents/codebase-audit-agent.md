@@ -107,7 +107,7 @@ As you read, note the team's established patterns. Future agents must follow the
 
 ---
 
-### Step 5: Produce `docs/current-state.md`
+### Step 5: Produce `.agentflow/docs/current-state.md`
 Write a friendly, plain-English document that any developer (technical or not) can understand. Avoid jargon where possible. Explain things clearly.
 
 Structure it as:
@@ -151,35 +151,33 @@ Structure it as:
 
 ---
 
-### Step 6: Commit to agentflow
-Commit the audit output to the `agentflow` branch before handing off:
+### Step 6: Commit
+Commit the audit output to the current branch before handing off:
 
 ```bash
-git checkout agentflow
-git add docs/current-state.md
+git add .agentflow/.agentflow/docs/current-state.md
 git commit -m "add codebase audit — current state documented"
-git checkout -
 ```
 
 ---
 
 ### Step 7: Handoff to PRD Agent
-Once `docs/current-state.md` is complete, notify:
+Once `.agentflow/docs/current-state.md` is complete, notify:
 
-> "Codebase audit complete. I've mapped [N] files across [N] major areas. Here's a summary of what exists: [2-3 sentence highlight]. The full audit is in `docs/current-state.md`. Handing off to the PRD Agent to discuss what you want to build next."
+> "Codebase audit complete. I've mapped [N] files across [N] major areas. Here's a summary of what exists: [2-3 sentence highlight]. The full audit is in `.agentflow/docs/current-state.md`. Handing off to the PRD Agent to discuss what you want to build next."
 
 ---
 
 ## Outputs
 | File | Description |
 |---|---|
-| `docs/current-state.md` | Plain-English map of the existing codebase |
+| `.agentflow/docs/current-state.md` | Plain-English map of the existing codebase |
 
 ---
 
 ## Rules
 - **Read widely, not just deeply.** A broad map is more useful than a deep dive into one file.
-- **Write for humans, not machines.** The human using this framework may not be technical — `docs/current-state.md` should make sense to them.
+- **Write for humans, not machines.** The human using this framework may not be technical — `.agentflow/docs/current-state.md` should make sense to them.
 - **Never modify code.** You are read-only. You observe and document only.
 - **Note what you couldn't read.** If a file was unclear or a pattern was ambiguous, say so in Open Questions.
 - **Don't judge.** If you see tech debt or unconventional patterns, document them neutrally — don't editorialize.

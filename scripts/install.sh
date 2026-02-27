@@ -28,8 +28,8 @@ echo -e "Installing into: ${CYAN}$TARGET${NC}"
 echo ""
 
 # ── Guard: already installed? ─────────────────────────────────────────────────
-if [ -d "$TARGET/agents" ]; then
-  echo -e "${YELLOW}Warning: agents/ already exists here.${NC}"
+if [ -d "$TARGET/.agentflow" ]; then
+  echo -e "${YELLOW}Warning: .agentflow/ already exists here.${NC}"
   if [ -t 0 ]; then
     read -r -p "Overwrite existing installation? [y/N] " CONFIRM
   else
@@ -85,63 +85,50 @@ SRC="$TMP/$(ls "$TMP")"
 
 # ── Copy core files ───────────────────────────────────────────────────────────
 echo "Installing..."
+mkdir -p "$TARGET/.agentflow"
 
-cp -r "$SRC/agents"     "$TARGET/agents"
-echo "  ✓ agents/"
+cp -r "$SRC/agents"     "$TARGET/.agentflow/agents"
+echo "  ✓ .agentflow/agents/"
 
-cp -r "$SRC/templates"  "$TARGET/templates"
-echo "  ✓ templates/"
+cp -r "$SRC/templates"  "$TARGET/.agentflow/templates"
+echo "  ✓ .agentflow/templates/"
 
-cp -r "$SRC/intake"     "$TARGET/intake"
-echo "  ✓ intake/"
+cp -r "$SRC/intake"     "$TARGET/.agentflow/intake"
+echo "  ✓ .agentflow/intake/"
 
-cp    "$SRC/WORKFLOW.md" "$TARGET/WORKFLOW.md"
-echo "  ✓ WORKFLOW.md"
+cp    "$SRC/WORKFLOW.md" "$TARGET/.agentflow/WORKFLOW.md"
+echo "  ✓ .agentflow/WORKFLOW.md"
 
-# ── Update .gitignore ─────────────────────────────────────────────────────────
-GITIGNORE="$TARGET/.gitignore"
-AGENTFLOW_BLOCK="
-# BurnProof-AgentFlow — context files (live on agentflow branch, not main)
-/agents/
-/templates/
-/intake/
-/WORKFLOW.md
-/specs/
-/config/
-/docs/prd.md
-/docs/pmf.md
-/docs/architecture.md
-/docs/design-system.md
-/docs/current-state.md
-/docs/migration-guide.md
-/docs/wireframes/
-/docs/intake/
-/docs/environments.md
-/docs/secrets.md
-/docs/devops.md
-"
+# ── Set up .gitattributes (Option A — auto-strip .agentflow/ on merge to main) ─
+GITATTRIBUTES="$TARGET/.gitattributes"
+ATTR_ENTRY='.agentflow/ merge=ours'
 
-if [ -f "$GITIGNORE" ]; then
-  if ! grep -q "BurnProof-AgentFlow" "$GITIGNORE"; then
-    echo "$AGENTFLOW_BLOCK" >> "$GITIGNORE"
-    echo "  ✓ .gitignore updated"
+if [ -f "$GITATTRIBUTES" ]; then
+  if ! grep -q '\.agentflow/' "$GITATTRIBUTES"; then
+    printf '\n# BurnProof-AgentFlow — strip on merge to main\n%s\n' "$ATTR_ENTRY" >> "$GITATTRIBUTES"
+    echo "  ✓ .gitattributes updated"
   else
-    echo "  ✓ .gitignore already has agentflow entries"
+    echo "  ✓ .gitattributes already configured"
   fi
 else
-  echo "$AGENTFLOW_BLOCK" > "$GITIGNORE"
-  echo "  ✓ .gitignore created"
+  printf '# BurnProof-AgentFlow — strip on merge to main\n%s\n' "$ATTR_ENTRY" > "$GITATTRIBUTES"
+  echo "  ✓ .gitattributes created"
+fi
+
+# Configure git merge driver (required for merge=ours to work)
+if git rev-parse --git-dir > /dev/null 2>&1; then
+  git config merge.ours.driver true
+  echo "  ✓ git merge driver configured"
 fi
 
 # ── Create empty project directories ─────────────────────────────────────────
 mkdir -p \
-  "$TARGET/specs/epics" \
-  "$TARGET/specs/stories" \
-  "$TARGET/specs/contracts" \
-  "$TARGET/docs/intake" \
-  "$TARGET/docs/api" \
-  "$TARGET/config"
-echo "  ✓ specs/, docs/, config/"
+  "$TARGET/.agentflow/specs/epics" \
+  "$TARGET/.agentflow/specs/stories" \
+  "$TARGET/.agentflow/specs/contracts" \
+  "$TARGET/.agentflow/docs/intake" \
+  "$TARGET/.agentflow/config"
+echo "  ✓ .agentflow/specs/, docs/, config/"
 
 # ── Editor adapters ───────────────────────────────────────────────────────────
 if [[ "$EDITOR" == "claude-code" || "$EDITOR" == "both" ]]; then
@@ -172,10 +159,10 @@ if [[ "$EDITOR" == "cursor" || "$EDITOR" == "both" ]]; then
   STEP=$((STEP + 1))
 fi
 if [[ "$EDITOR" == "none" ]]; then
-  echo "  $STEP. Open agents/orchestrator-agent.md and load it as your agent"
+  echo "  $STEP. Open .agentflow/agents/orchestrator-agent.md and load it as your agent"
   STEP=$((STEP + 1))
 fi
-echo "  $STEP. Drop any reference files in intake/ before your first session"
+echo "  $STEP. Drop any reference files in .agentflow/intake/ before your first session"
 STEP=$((STEP + 1))
-echo "  $STEP. See WORKFLOW.md for the full guide"
+echo "  $STEP. See .agentflow/WORKFLOW.md for the full guide"
 echo ""

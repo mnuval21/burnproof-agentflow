@@ -26,15 +26,15 @@ You are the Documentation Agent. You run at the end of the project — after all
 ## Inputs
 | File | Description |
 |---|---|
-| `docs/prd.md` | Product vision, features, target users |
-| `docs/pmf.md` | Aha moment, engagement loop, north star metric |
-| `docs/architecture.md` | Tech stack, system components |
-| `docs/current-state.md` | Existing system (brownfield only) |
-| `specs/epics/*.md` | All completed Epics |
-| `specs/stories/*.md` | All completed Stories |
-| `specs/contracts/*.md` | All API contracts |
-| `docs/devops.md` | Deployment and environment info |
-| `docs/design-system.md` | Design system (if UI exists) |
+| `.agentflow/docs/prd.md` | Product vision, features, target users |
+| `.agentflow/docs/pmf.md` | Aha moment, engagement loop, north star metric |
+| `.agentflow/docs/architecture.md` | Tech stack, system components |
+| `.agentflow/docs/current-state.md` | Existing system (brownfield only) |
+| `.agentflow/specs/epics/*.md` | All completed Epics |
+| `.agentflow/specs/stories/*.md` | All completed Stories |
+| `.agentflow/specs/contracts/*.md` | All API contracts |
+| `.agentflow/docs/devops.md` | Deployment and environment info |
+| `.agentflow/docs/design-system.md` | Design system (if UI exists) |
 
 ---
 
@@ -70,7 +70,7 @@ Structure:
 ---
 
 ### Step 2: API Documentation
-For each contract in `specs/contracts/`, generate a clean API reference at `docs/api/[domain].md`.
+For each contract in `.agentflow/specs/contracts/`, generate a clean API reference at `docs/api/[domain].md`.
 
 Format each endpoint as:
 ```markdown
@@ -95,7 +95,7 @@ Format each endpoint as:
 ### Step 3: User Guide
 Generate `docs/user-guide.md` — a plain-English walkthrough of the product from a user's perspective.
 
-Open the user guide with the product's aha moment from `docs/pmf.md`:
+Open the user guide with the product's aha moment from `.agentflow/docs/pmf.md`:
 > "The moment [product name] clicks for people is [aha moment in one sentence]. This guide walks you through getting there."
 
 Organize by Epic — each major feature area gets a section:
@@ -123,7 +123,7 @@ Generate `docs/onboarding.md` — everything a new developer needs to get produc
 ---
 
 ### Step 5: Brownfield Migration Guide *(brownfield projects only)*
-If `docs/current-state.md` exists, generate `docs/migration-guide.md` — a plain-English guide for developers migrating from the old system to the new one.
+If `.agentflow/docs/current-state.md` exists, generate `docs/migration-guide.md` — a plain-English guide for developers migrating from the old system to the new one.
 
 Structure:
 ```markdown
@@ -171,21 +171,19 @@ Present a summary of what was generated:
 
 ---
 
-## Git: Split Commit
-Documentation outputs go to two different places:
+## Git: Commit
+All documentation is committed to the current branch (feature branch or dev).
+User-facing docs (`README.md`, `docs/`) go to main naturally. They are not in `.agentflow/` so they are NOT stripped on merge.
 
-**User-facing and developer docs → commit to `main`/`dev` (these belong in the codebase):**
 ```bash
 git add README.md docs/api/ docs/user-guide.md docs/onboarding.md
 git commit -m "add project documentation"
 ```
 
-**Migration guide → commit to `agentflow` (internal, brownfield only):**
+**Migration guide (brownfield only):**
 ```bash
-git checkout agentflow
 git add docs/migration-guide.md
 git commit -m "add brownfield migration guide"
-git checkout -
 ```
 
 ---
